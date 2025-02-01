@@ -81,8 +81,6 @@ const Game: React.FC<GameProps> = ({
   ]);
   const [stepNumber, setStepNumber] = useState<number>(0);
   const [isPlayerXTurn, setIsPlayerXTurn] = useState<boolean>(true);
-  // No longer using isComputerThinking since the new effect logic handles the timing
-  // separately via a setTimeout in the effect.
 
   const current = history[stepNumber];
   const isBoardFull = current.squares.every(cell => cell !== null);
@@ -118,9 +116,15 @@ const Game: React.FC<GameProps> = ({
     // Create a new board state.
     const squares = current.squares.slice();
     squares[i] = currentPlayer;
-    setHistory(history.slice(0, stepNumber + 1).concat([{ squares }]));
-    setStepNumber(history.length);
-    setIsPlayerXTurn(false);
+    const newHistory = history.slice(0, stepNumber + 1).concat([{ squares }]);
+    setHistory(newHistory);
+    setStepNumber(newHistory.length - 1);
+    // Toggle turn: In single player, set to computer (false); in multiplayer, toggle.
+    if (mode === "single") {
+      setIsPlayerXTurn(false);
+    } else {
+      setIsPlayerXTurn(!isPlayerXTurn);
+    }
   };
 
   // Jump to a specific move in the history.
