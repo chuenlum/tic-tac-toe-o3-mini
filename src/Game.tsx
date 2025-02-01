@@ -11,9 +11,9 @@ interface GameProps {
   winCondition?: number;
 }
 
-const DEFAULT_NUM_ROWS = 5;
-const DEFAULT_NUM_COLS = 7;
-const DEFAULT_WIN_CONDITION = 5;
+const DEFAULT_NUM_ROWS = 3;
+const DEFAULT_NUM_COLS = 3;
+const DEFAULT_WIN_CONDITION = 3;
 
 // -------------------------
 // Square Component
@@ -94,7 +94,6 @@ const Game: React.FC<GameProps> = ({
   const currentPlayer = isPlayerXTurn ? 'X' : 'O';
 
   // --- Validation ---
-  // Define an array to hold any validation error messages.
   const validationErrors: string[] = [];
   if (rows < 3) validationErrors.push("Rows must be at least 3.");
   if (cols < 3) validationErrors.push("Columns must be at least 3.");
