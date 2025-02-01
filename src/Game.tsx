@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import './Game.css';
 
 // -------------------------
-// Configurable via Props
+// Configurable via Props Defaults
 // -------------------------
 interface GameProps {
   numRows?: number;
@@ -11,8 +11,8 @@ interface GameProps {
   winCondition?: number;
 }
 
-const DEFAULT_NUM_ROWS = 20;
-const DEFAULT_NUM_COLS = 20;
+const DEFAULT_NUM_ROWS = 5;
+const DEFAULT_NUM_COLS = 7;
 const DEFAULT_WIN_CONDITION = 5;
 
 // -------------------------
@@ -73,53 +73,53 @@ const Game: React.FC<GameProps> = ({
   numCols = DEFAULT_NUM_COLS,
   winCondition = DEFAULT_WIN_CONDITION,
 }) => {
-  // "multi" for two players, "single" for playing against the computer.
-  // In single-player mode, the human is always "X" and the computer is "O".
+  // UI configuration state.
+  const [rows, setRows] = useState<number>(numRows);
+  const [cols, setCols] = useState<number>(numCols);
+  const [winSeq, setWinSeq] = useState<number>(winCondition);
+
+  // Mode: "single" for playing against the computer, "multi" for two players.
   const [mode, setMode] = useState<"single" | "multi">("multi");
+
+  // Game state.
   const [history, setHistory] = useState<HistoryEntry[]>([
-    { squares: Array(numRows * numCols).fill(null) },
+    { squares: Array(rows * cols).fill(null) },
   ]);
   const [stepNumber, setStepNumber] = useState<number>(0);
   const [isPlayerXTurn, setIsPlayerXTurn] = useState<boolean>(true);
 
   const current = history[stepNumber];
   const isBoardFull = current.squares.every(cell => cell !== null);
-  const winner = calculateWinner(current.squares, numRows, numCols, winCondition);
+  const winner = calculateWinner(current.squares, rows, cols, winSeq);
   const currentPlayer = isPlayerXTurn ? 'X' : 'O';
 
-  // -------------------------
-  // Event Handlers & Helpers
-  // -------------------------
+  // Reset the game with the current configuration.
   const resetGame = (): void => {
-    setHistory([{ squares: Array(numRows * numCols).fill(null) }]);
+    setHistory([{ squares: Array(rows * cols).fill(null) }]);
     setStepNumber(0);
     setIsPlayerXTurn(true);
   };
 
+  // Mode change handler.
   const handleModeChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const newMode = e.target.value as "single" | "multi";
     setMode(newMode);
     resetGame();
   };
 
-  /**
-   * Handles a move on the board (human move).
-   */
+  // Handle a human move.
   const handleClick = (i: number): void => {
-    // In single-player mode, ignore clicks if it's not the human's turn.
     if (mode === "single" && !isPlayerXTurn) {
       return;
     }
     if (winner || current.squares[i]) {
       return;
     }
-    // Create a new board state.
     const squares = current.squares.slice();
     squares[i] = currentPlayer;
     const newHistory = history.slice(0, stepNumber + 1).concat([{ squares }]);
     setHistory(newHistory);
     setStepNumber(newHistory.length - 1);
-    // Toggle turn: In single player, set to computer (false); in multiplayer, toggle.
     if (mode === "single") {
       setIsPlayerXTurn(false);
     } else {
@@ -127,24 +127,21 @@ const Game: React.FC<GameProps> = ({
     }
   };
 
-  // Jump to a specific move in the history.
+  // Jump to a specific move.
   const jumpTo = (step: number): void => {
     setStepNumber(step);
     setIsPlayerXTurn(step % 2 === 0);
   };
 
-  // -------------------------
-  // Computer Move Effect (Single Player)
-  // -------------------------
+  // Computer move effect (only in single-player mode).
   useEffect(() => {
     if (
       mode === "single" &&
-      !isPlayerXTurn && // It's computer's turn.
+      !isPlayerXTurn &&
       !winner &&
       !isBoardFull
     ) {
       const timer = setTimeout(() => {
-        // Use a functional update to get the latest board state.
         setHistory(prevHistory => {
           const latestEntry = prevHistory[prevHistory.length - 1];
           const newSquares = latestEntry.squares.slice();
@@ -152,7 +149,6 @@ const Game: React.FC<GameProps> = ({
             .map((cell, idx) => (cell === null ? idx : null))
             .filter((v): v is number => v !== null);
           if (emptySquares.length > 0) {
-            // Computer always plays "O"
             const randomIndex =
               emptySquares[Math.floor(Math.random() * emptySquares.length)];
             newSquares[randomIndex] = 'O';
@@ -167,35 +163,39 @@ const Game: React.FC<GameProps> = ({
     }
   }, [mode, isPlayerXTurn, winner, isBoardFull]);
 
-  // -------------------------
-  // Render: Move History and Status
-  // -------------------------
-  const moves = history.map((step, move) => {
-    const desc = move ? `Go to move #${move}` : 'Go to game start';
-    return (
-      <li key={move}>
-        <button onClick={() => jumpTo(move)}>{desc}</button>
-      </li>
-    );
-  });
-
-  let status: string;
-  if (winner) {
-    status = `Winner: ${winner}`;
-  } else if (isBoardFull) {
-    status = "It's a tie!";
-  } else {
-    status =
-      mode === "single"
-        ? isPlayerXTurn
-          ? "Your turn (X)"
-          : "Computer's turn (O)"
-        : `Next player: ${currentPlayer}`;
-  }
-
   return (
     <div className="game">
       <div className="game-controls">
+        <div className="config">
+          <label>
+            Rows:
+            <input
+              type="number"
+              value={rows}
+              onChange={(e) => setRows(Number(e.target.value))}
+              min="3"
+            />
+          </label>
+          <label>
+            Columns:
+            <input
+              type="number"
+              value={cols}
+              onChange={(e) => setCols(Number(e.target.value))}
+              min="3"
+            />
+          </label>
+          <label>
+            Winning Sequence:
+            <input
+              type="number"
+              value={winSeq}
+              onChange={(e) => setWinSeq(Number(e.target.value))}
+              min="3"
+            />
+          </label>
+          <button onClick={resetGame}>Apply Configuration</button>
+        </div>
         <div className="mode-select">
           <label>
             <input
@@ -222,13 +222,31 @@ const Game: React.FC<GameProps> = ({
         <Board
           squares={current.squares}
           onClick={handleClick}
-          numRows={numRows}
-          numCols={numCols}
+          numRows={rows}
+          numCols={cols}
         />
       </div>
       <div className="game-info">
-        <div className="status">{status}</div>
-        <ol>{moves}</ol>
+        <div className="status">
+          {winner
+            ? `Winner: ${winner}`
+            : isBoardFull
+            ? "It's a tie!"
+            : mode === "single"
+            ? isPlayerXTurn
+              ? "Your turn (X)"
+              : "Computer's turn (O)"
+            : `Next player: ${currentPlayer}`}
+        </div>
+        <ol>
+          {history.map((step, move) => (
+            <li key={move}>
+              <button onClick={() => jumpTo(move)}>
+                {move ? `Go to move #${move}` : 'Go to game start'}
+              </button>
+            </li>
+          ))}
+        </ol>
       </div>
       <div className="footer">
         <a href="https://github.com/chuenlum/tic-tac-toe-o3-mini" target="_blank" rel="noopener noreferrer">
@@ -241,12 +259,7 @@ const Game: React.FC<GameProps> = ({
 
 // -------------------------
 // Game Logic Helper Functions
-// (These can be moved to a separate file if desired)
 // -------------------------
-
-/**
- * Checks if there is a winning sequence starting from (row, col) in a given direction.
- */
 function checkDirection(
   squares: (string | null)[],
   row: number,
@@ -276,9 +289,6 @@ function checkDirection(
   return true;
 }
 
-/**
- * Determines the winner by checking all possible directions.
- */
 function calculateWinner(
   squares: (string | null)[],
   numRows: number,
