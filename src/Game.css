@@ -1,0 +1,53 @@
+/* src/Game.css */
+.game {
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+  align-items: center;
+}
+
+.game-controls {
+  margin-bottom: 20px;
+}
+
+.mode-select {
+  margin-bottom: 10px;
+}
+
+.mode-select label {
+  margin-right: 10px;
+}
+
+.game-board {
+  margin-bottom: 20px;
+}
+
+.board-row {
+  display: flex;
+}
+
+.square {
+  background: #fff;
+  border: 1px solid #999;
+  font-size: 24px;
+  font-weight: bold;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.square:focus {
+  outline: none;
+}
+
+.game-info {
+  text-align: left;
+}
+
+.status {
+  margin-bottom: 10px;
+}
