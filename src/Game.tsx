@@ -93,11 +93,27 @@ const Game: React.FC<GameProps> = ({
   const winner = calculateWinner(current.squares, rows, cols, winSeq);
   const currentPlayer = isPlayerXTurn ? 'X' : 'O';
 
+  // --- Validation ---
+  // Define an array to hold any validation error messages.
+  const validationErrors: string[] = [];
+  if (rows < 3) validationErrors.push("Rows must be at least 3.");
+  if (cols < 3) validationErrors.push("Columns must be at least 3.");
+  if (winSeq < 3) validationErrors.push("Winning sequence must be at least 3.");
+  if (winSeq > rows || winSeq > cols)
+    validationErrors.push("Winning sequence cannot exceed board dimensions.");
+
   // Reset the game with the current configuration.
   const resetGame = (): void => {
     setHistory([{ squares: Array(rows * cols).fill(null) }]);
     setStepNumber(0);
     setIsPlayerXTurn(true);
+  };
+
+  // Apply configuration if valid.
+  const applyConfiguration = (): void => {
+    if (validationErrors.length === 0) {
+      resetGame();
+    }
   };
 
   // Mode change handler.
@@ -194,7 +210,16 @@ const Game: React.FC<GameProps> = ({
               min="3"
             />
           </label>
-          <button onClick={resetGame}>Apply Configuration</button>
+          <button onClick={applyConfiguration} disabled={validationErrors.length > 0}>
+            Apply Configuration
+          </button>
+          {validationErrors.length > 0 && (
+            <div className="config-errors">
+              {validationErrors.map((error, index) => (
+                <p key={index} className="error">{error}</p>
+              ))}
+            </div>
+          )}
         </div>
         <div className="mode-select">
           <label>

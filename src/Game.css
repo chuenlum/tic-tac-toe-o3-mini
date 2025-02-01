@@ -21,6 +21,12 @@
   margin-right: 10px;
 }
 
+.config-errors {
+  margin-top: 5px;
+  color: red;
+  font-size: 0.9rem;
+}
+
 .mode-select {
   margin-bottom: 10px;
 }
