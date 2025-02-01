@@ -1,46 +1,75 @@
-# Getting Started with Create React App
+# Tic Tac Toe Game with Single & Multiplayer Modes
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a React and TypeScript Tic Tac Toe game that supports both multiplayer and single player modes:
 
-## Available Scripts
+- **Multiplayer:** Two players take turns on one computer.
+- **Single Player:** You play as "X" against a computer that plays as "O".
 
-In the project directory, you can run:
+All aspects of this project—including the code, documentation, and repository setup—were created using **o3-mini** and **o3-mini-high**.
 
-### `yarn start`
+> **Note:** This project was created using **o3-mini** and **o3-mini-high**.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Features
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- **Multiplayer Mode:** Two players alternate turns.
+- **Single Player Mode:** Play against a computer opponent.
+- **Configurable Settings:** Easily adjust board size and win conditions.
+- **Game History:** Review and jump back to previous moves.
+- **Built with o3-mini & o3-mini-high:** From the codebase to the README and repo configuration.
 
-### `yarn test`
+## Getting Started
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Follow these steps to run the project on your local machine.
 
-### `yarn build`
+### 1. Clone the Repository
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Clone the repository to your local machine using Git:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+git clone git@github.com:chuenlum/tic-tac-toe-o3-mini.git
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 2. Navigate to the Project Directory
 
-### `yarn eject`
+Change into the project folder:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+cd tic-tac-toe-o3-mini
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 3. Install Dependencies
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Install the project dependencies using Yarn:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+yarn install
+```
 
-## Learn More
+### 4. Start the Development Server
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Run the following command to start the development server:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+yarn start
+```
+
+This will open the application in your default browser at [http://localhost:3000](http://localhost:3000).
+
+## How to Use the Game
+
+- **Mode Selection:**
+  At the top of the interface, choose **Multiplayer** (for two players on one computer) or **Single Player** (to play against the computer).
+
+- **Reset Game:**
+  Click the **Reset Game** button at any time to restart the game.
+
+- **Gameplay:**
+  - In **Multiplayer**, players alternate clicking on empty squares.
+  - In **Single Player**, you play as "X" and the computer (playing as "O") will automatically make a move after your turn.
+
+- **Game History:**
+  A list of past moves is displayed. Click on any move to jump back to that game state.
+
+## License
+
+This project is provided as-is. Feel free to modify and use it for your own purposes.
