@@ -81,7 +81,8 @@ const Game: React.FC<GameProps> = ({
   ]);
   const [stepNumber, setStepNumber] = useState<number>(0);
   const [isPlayerXTurn, setIsPlayerXTurn] = useState<boolean>(true);
-  const [isComputerThinking, setIsComputerThinking] = useState<boolean>(false);
+  // No longer using isComputerThinking since the new effect logic handles the timing
+  // separately via a setTimeout in the effect.
 
   const current = history[stepNumber];
   const isBoardFull = current.squares.every(cell => cell !== null);
@@ -95,7 +96,6 @@ const Game: React.FC<GameProps> = ({
     setHistory([{ squares: Array(numRows * numCols).fill(null) }]);
     setStepNumber(0);
     setIsPlayerXTurn(true);
-    setIsComputerThinking(false);
   };
 
   const handleModeChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -105,23 +105,22 @@ const Game: React.FC<GameProps> = ({
   };
 
   /**
-   * Handles a move on the board.
-   * The isComputerMove flag bypasses human-turn restrictions.
+   * Handles a move on the board (human move).
    */
-  const handleClick = (i: number, isComputerMove: boolean = false): void => {
-    // In single-player mode, ignore human clicks if it's not the human's turn or if the computer is thinking.
-    if (!isComputerMove && mode === "single" && (!isPlayerXTurn || isComputerThinking)) {
+  const handleClick = (i: number): void => {
+    // In single-player mode, ignore clicks if it's not the human's turn.
+    if (mode === "single" && !isPlayerXTurn) {
       return;
     }
     if (winner || current.squares[i]) {
       return;
     }
+    // Create a new board state.
     const squares = current.squares.slice();
     squares[i] = currentPlayer;
-    const newHistory = history.slice(0, stepNumber + 1).concat([{ squares }]);
-    setHistory(newHistory);
-    setStepNumber(newHistory.length - 1);
-    setIsPlayerXTurn(!isPlayerXTurn);
+    setHistory(history.slice(0, stepNumber + 1).concat([{ squares }]));
+    setStepNumber(history.length);
+    setIsPlayerXTurn(false);
   };
 
   // Jump to a specific move in the history.
@@ -131,30 +130,38 @@ const Game: React.FC<GameProps> = ({
   };
 
   // -------------------------
-  // Computer Move Effect
+  // Computer Move Effect (Single Player)
   // -------------------------
   useEffect(() => {
     if (
       mode === "single" &&
+      !isPlayerXTurn && // It's computer's turn.
       !winner &&
-      !isBoardFull &&
-      !isPlayerXTurn &&
-      !isComputerThinking
+      !isBoardFull
     ) {
-      const emptySquares: number[] = current.squares
-        .map((cell, idx) => (cell === null ? idx : null))
-        .filter((v): v is number => v !== null);
-      if (emptySquares.length > 0) {
-        setIsComputerThinking(true);
-        const randomIndex = emptySquares[Math.floor(Math.random() * emptySquares.length)];
-        const timer = setTimeout(() => {
-          handleClick(randomIndex, true);
-          setIsComputerThinking(false);
-        }, 500);
-        return () => clearTimeout(timer);
-      }
+      const timer = setTimeout(() => {
+        // Use a functional update to get the latest board state.
+        setHistory(prevHistory => {
+          const latestEntry = prevHistory[prevHistory.length - 1];
+          const newSquares = latestEntry.squares.slice();
+          const emptySquares = newSquares
+            .map((cell, idx) => (cell === null ? idx : null))
+            .filter((v): v is number => v !== null);
+          if (emptySquares.length > 0) {
+            // Computer always plays "O"
+            const randomIndex =
+              emptySquares[Math.floor(Math.random() * emptySquares.length)];
+            newSquares[randomIndex] = 'O';
+            return prevHistory.concat([{ squares: newSquares }]);
+          }
+          return prevHistory;
+        });
+        setStepNumber(prev => prev + 1);
+        setIsPlayerXTurn(true);
+      }, 500);
+      return () => clearTimeout(timer);
     }
-  }, [mode, winner, isBoardFull, isPlayerXTurn, current.squares, isComputerThinking]);
+  }, [mode, isPlayerXTurn, winner, isBoardFull]);
 
   // -------------------------
   // Render: Move History and Status
