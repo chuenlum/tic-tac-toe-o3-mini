@@ -80,6 +80,10 @@ This will open the application in your default browser at [http://localhost:3000
 - **Game History:**
   A list of past moves is displayed. Click on any move to jump back to that game state.
 
+## ChatGPT Session
+
+For detailed context on how this project was built and the decision-making process, view the entire ChatGPT session here: [View ChatGPT Session](https://chatgpt.com/share/679ddb60-054c-800a-8fa4-8cbe88e05428)
+
 ## Repository
 
 View the source code on GitHub: [https://github.com/chuenlum/tic-tac-toe-o3-mini](https://github.com/chuenlum/tic-tac-toe-o3-mini)
