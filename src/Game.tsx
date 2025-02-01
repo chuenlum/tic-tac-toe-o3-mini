@@ -230,6 +230,11 @@ const Game: React.FC<GameProps> = ({
         <div className="status">{status}</div>
         <ol>{moves}</ol>
       </div>
+      <div className="footer">
+        <a href="https://github.com/chuenlum/tic-tac-toe-o3-mini" target="_blank" rel="noopener noreferrer">
+          View Source on GitHub
+        </a>
+      </div>
     </div>
   );
 };

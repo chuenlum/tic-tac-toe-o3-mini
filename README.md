@@ -9,6 +9,10 @@ All aspects of this project—including the code, documentation, and repository 
 
 > **Note:** This project was created using **o3-mini** and **o3-mini-high**.
 
+## Live Demo
+
+Play the game online at: [https://chuenlum.github.io/tic-tac-toe-o3-mini](https://chuenlum.github.io/tic-tac-toe-o3-mini)
+
 ## Features
 
 - **Multiplayer Mode:** Two players alternate turns.
@@ -73,3 +77,7 @@ This will open the application in your default browser at [http://localhost:3000
 ## License
 
 This project is provided as-is. Feel free to modify and use it for your own purposes.
+
+## Repository
+
+View the source code on GitHub: [https://github.com/chuenlum/tic-tac-toe-o3-mini](https://github.com/chuenlum/tic-tac-toe-o3-mini)
